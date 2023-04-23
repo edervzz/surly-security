@@ -1,2 +1,2 @@
 # surly
-surly api
+surly security api
