@@ -1,0 +1,346 @@
+basePath: /security/api/v1
+definitions:
+  ChangePassword:
+    description: Result of change current password
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      expires_in:
+        example: 1800
+        type: integer
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      token_type:
+        example: Bearer
+        type: string
+    type: object
+  EmailConfirmUser:
+    description: User confirmed via email
+    properties:
+      is_success:
+        type: boolean
+    type: object
+  Login:
+    description: Login
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      expires_in:
+        example: 1800
+        type: integer
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      token_type:
+        example: Bearer
+        type: string
+    type: object
+  NewChangePassword:
+    description: Change current password
+    properties:
+      current_password:
+        type: string
+      new_password:
+        description: '"One upper, one lower, one number, one special @#$%&, len: 8-16"'
+        format: password
+        maxLength: 16
+        minLength: 8
+        type: string
+    required:
+    - new_password
+    type: object
+  NewLogin:
+    description: Confirmation token
+    properties:
+      email:
+        example: johndoe@mail.com
+        type: string
+      password:
+        type: string
+    type: object
+  NewPasswordForgot:
+    description: New Password forgot flow
+    properties:
+      email:
+        type: string
+    type: object
+  NewResetPasswordForgot:
+    description: Reset password forgot
+    properties:
+      new_password:
+        description: '"One upper, one lower, one number, one special @#$%&, len: 8-16"'
+        format: password
+        maxLength: 16
+        minLength: 8
+        type: string
+      reset_password_token:
+        example: 2eba30ff-adb8-478b-913f-ace363acbd34
+        type: string
+    required:
+    - new_password
+    type: object
+  NewSignUp:
+    description: User account information
+    properties:
+      email:
+        example: johndoe@mail.com
+        type: string
+      fullname:
+        example: John Doe
+        maxLength: 30
+        minLength: 5
+        type: string
+      password:
+        description: '"One upper, one lower, one number, one special @#$%&, len: 8-16
+          "'
+        format: password
+        maxLength: 16
+        minLength: 8
+        type: string
+    required:
+    - email
+    - fullname
+    - password
+    type: object
+  PasswordForgot:
+    description: Password forgot flow
+    properties:
+      token:
+        example: 2eba30ff-adb8-478b-913f-ace363acbd34
+        type: string
+    type: object
+  RefreshLogin:
+    description: Refresh Login
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      expires_in:
+        example: 1800
+        type: integer
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      token_type:
+        example: Bearer
+        type: string
+    type: object
+  ResetPasswordForgot:
+    description: Result Reset password forgot
+    properties:
+      isSuccess:
+        type: boolean
+    type: object
+  SignUp:
+    description: Confirmation token
+    properties:
+      confirm_token:
+        example: 2eba30ff-adb8-478b-913f-ace363acbd34
+        type: string
+      email:
+        example: johndoe@mail.com
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:6001
+info:
+  contact:
+    email: edervzz.work@gmail.com
+    name: Eder Velázquez
+    url: https://www.linkedin.com/in/oscar-eder-vel%C3%A1zquez-pineda/
+  description: Security API
+  termsOfService: http://swagger.io/terms/
+  title: Security API
+  version: "1.0"
+paths:
+  /users/confirm/email/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Confirm user created
+      parameters:
+      - description: Confirmation token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/EmailConfirmUser'
+        "400":
+          description: Invalid token
+        "500":
+          description: Internal Server Error
+      summary: Confirm sign up
+      tags:
+      - Users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login session
+      parameters:
+      - description: Login User Information
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/NewLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Login'
+        "400":
+          description: Login failed
+        "500":
+          description: Internal Server Error
+      summary: Login
+      tags:
+      - Users
+  /users/login/refresh/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Refresh login session
+      parameters:
+      - description: Refresh token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RefreshLogin'
+        "400":
+          description: Login failed
+        "500":
+          description: Internal Server Error
+      summary: Refresh Login
+      tags:
+      - Users
+  /users/me/password:
+    put:
+      consumes:
+      - application/json
+      description: Change current password including a valid access token.
+      parameters:
+      - description: Change password Information
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/NewChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ChangePassword'
+        "400":
+          description: Login failed
+        "500":
+          description: Internal Server Error
+      summary: Change password
+      tags:
+      - Users
+  /users/password/forgot:
+    post:
+      consumes:
+      - application/json
+      description: Forgot password flow
+      parameters:
+      - description: New Forgot Password info
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/NewPasswordForgot'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PasswordForgot'
+        "400":
+          description: Something is wrong
+        "500":
+          description: Internal Server Error
+      summary: Forgot password flow
+      tags:
+      - Users
+  /users/password/reset:
+    post:
+      consumes:
+      - application/json
+      description: Forgot password flow
+      parameters:
+      - description: Reset password information
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/NewResetPasswordForgot'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ResetPasswordForgot'
+        "400":
+          description: Something is wrong
+        "500":
+          description: Internal Server Error
+      summary: Forgot password flow
+      tags:
+      - Users
+  /users/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with password
+      parameters:
+      - description: User Information
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/NewSignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/SignUp'
+        "400":
+          description: Bad Request
+        "409":
+          description: User already exists.
+        "500":
+          description: Internal Server Error
+      summary: Sign Up
+      tags:
+      - Users
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

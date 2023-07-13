@@ -5,17 +5,55 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "preLaunchTask": "swagger-security",
+            "name": "Security API",
+            "type": "go",
             "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
+            "mode": "auto",
+            "output": "${workspaceFolder}/build/core",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/cmd/main.go",
+            "env": {
+                "BASE_PATH": "/security/api/v1",
+                "APP_PORT": "6001",
+                // "DB_SERVER": "localhost",
+                // "DB_NAME": "surly_security",
+                // "DB_PORT": "3306",
+                // "DB_USR": "root",
+                // "DB_PWD": "eder",
+                "DB_SERVER": "test-db1.crh6syfj027i.us-east-1.rds.amazonaws.com",
+                "DB_NAME": "surly_security",
+                "DB_PORT": "3306",
+                "DB_USR": "admin",
+                "DB_PWD": "!(kB7jg_y_5F!31r]M&YjJJab|Fc",
+                /* "DB_MIGRATE": "false" - stop migrations manually */
+                "EMAIL_FROM": "surly.webapp@gmail.com",
+                "EMAIL_APIKEY": "ealklwvmcwzrdotm",
+                "EMAIL_HOST": "smtp.gmail.com",
+                "EMAIL_PORT": "587",
+                "OpenTelemetry:Name": "surly-security",
+                "OpenTelemetry:ExporterEndpoint": "",
+                "Jwt:Issuer": "surly-security.com",
+                "Jwt:Audience": "surly-eco.com",
+                "Jwt:Key": "S3cr3tP@ss!S3cr3tP@ss!S3cr3tP@ss!S3cr3tP@ss!S3cr3tP@ss!S3cr3tP@ss!",
+                "Jwt:Expiration": "1800",
+                "Jwt:RefreshExpiration": "10080"
+            },
+            "serverReadyAction": {
+                "action": "openExternally",
+                "killOnServerStop": true,
+                "uriFormat": "http://localhost:%s/swagger/index.html",
+                "pattern": "listening on port ([0-9]+)"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "All API's",
+            "configurations": [
+                "Security API"
             ],
-            "program": "${workspaceFolder}\\src\\app.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": [
-                "${workspaceFolder}/**/*.js"
-            ]
+            "stopAll": true
         }
     ]
 }

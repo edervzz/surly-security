@@ -1,0 +1,27 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "swagger-security",
+            "type": "shell",
+            "command": "swag init -d ./cmd,./internal/webapi/endpoints,./internal/webapi/models -o ./docs",
+            "hide": true,
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "go test ./src/... -cover",
+            "hide": true,
+        },
+        {
+            "label": "prelaunch",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "test",
+                "swagger"
+            ]
+        }
+    ]
+}
